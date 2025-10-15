@@ -1,0 +1,14 @@
+.env
+champions.json
+players.json
+.env.local
+.env.*
+*.log
+*.tmp
+/bin/
+/build/
+/dist/
+vendor/
+*.exe
+*.exe~
+

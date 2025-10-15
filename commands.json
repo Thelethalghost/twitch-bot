@@ -1,0 +1,38 @@
+{
+  "!hello": {
+    "type": "static",
+    "response": "Hello there, welcome to the stream!",
+    "cooldown": 2
+  },
+  "!help": {
+    "type": "static",
+    "response": "!hello !title !elo !stats !bans",
+    "cooldown": 2
+  },
+  "!title": {
+    "type": "api",
+    "endpoint": "twitch_stream_info",
+    "cooldown": 2
+  },
+  "!elo": {
+    "type": "api",
+    "endpoint": "riot_rank_info",
+    "cooldown": 2
+  },
+  "!rank": {
+    "type": "api",
+    "endpoint": "riot_rank_info",
+    "cooldown": 2
+  },
+  "!stats": {
+    "type": "api",
+    "endpoint": "stream_stats_info",
+    "cooldown": 2
+  },
+  "!bans": {
+    "type": "api",
+    "endpoint": "current_bans_info",
+    "cooldown": 2
+  }
+}
+
