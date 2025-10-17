@@ -158,7 +158,7 @@ func main() {
 					}
 					say(conn, channel, fmt.Sprintf("@%s Current Rank: %s %s %d", user, rank[0].Tier, rank[0].Rank, rank[0].LeaguePoints))
 				case "stream_stats_info":
-					start, err := GetTwitchStreamStart("agurin")
+					start, err := GetTwitchStreamStart(channel)
 					if err != nil {
 						say(conn, channel, fmt.Sprintf("@%s Error fetching stream info.", user))
 					}
@@ -166,7 +166,7 @@ func main() {
 					if err != nil {
 						say(conn, channel, fmt.Sprintf("@%s Error Fetching stream stats.", user))
 					} else {
-						say(conn, channel, fmt.Sprintf("@%s Wins: %d | Loss: %d | Winrate: %.2f%% | LPGain: %+d", user, stats.Wins, stats.Losses, stats.Winrate, stats.LPEnd["RANKED_SOLO_5x5"]-stats.LPStart["RANKED_SOLO_5x5"]))
+						say(conn, channel, fmt.Sprintf("@%s Wins: %d | Loss: %d | Winrate: %.2f%% ", user, stats.Wins, stats.Losses, stats.Winrate))
 					}
 				case "current_bans_info":
 					bans, err := GetActiveMatchBans(puuid)
