@@ -1,0 +1,10 @@
+  "!elo": {
+    "type": "api",
+    "endpoint": "riot_rank_info",
+    "cooldown": 2
+  },
+  "!rank": {
+    "type": "api",
+    "endpoint": "riot_rank_info",
+    "cooldown": 2
+  },

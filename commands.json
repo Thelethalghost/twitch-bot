@@ -4,9 +4,14 @@
     "response": "Hello there, welcome to the stream!",
     "cooldown": 2
   },
+  "!gang":{
+    "type": "static",
+    "response": "juh guh huh zuh buh cuh muh nuh tuh wuh yuh uuh",
+    "cooldown": 5
+  },
   "!help": {
     "type": "static",
-    "response": "!hello !title !elo !stats !bans",
+    "response": "!hello !title !stats !bans !today !wr !magnet !dadjoke !bingo",
     "cooldown": 2
   },
   "!title": {
@@ -14,17 +19,17 @@
     "endpoint": "twitch_stream_info",
     "cooldown": 2
   },
-  "!elo": {
-    "type": "api",
-    "endpoint": "riot_rank_info",
-    "cooldown": 2
-  },
-  "!rank": {
-    "type": "api",
-    "endpoint": "riot_rank_info",
-    "cooldown": 2
-  },
   "!stats": {
+    "type": "api",
+    "endpoint": "stream_stats_info",
+    "cooldown": 2
+  },
+  "!wr": {
+    "type": "api",
+    "endpoint": "stream_stats_info",
+    "cooldown": 2
+  },
+  "!today": {
     "type": "api",
     "endpoint": "stream_stats_info",
     "cooldown": 2
@@ -32,6 +37,26 @@
   "!bans": {
     "type": "api",
     "endpoint": "current_bans_info",
+    "cooldown": 2
+  },
+  "!magnet": {
+    "type": "api",
+    "endpoint": "random_magnet_facts",
+    "cooldown": 2
+  },
+  "!magnets": {
+    "type": "api",
+    "endpoint": "random_magnet_facts",
+    "cooldown": 2
+  },
+  "!dadjoke": {
+    "type": "api",
+    "endpoint": "random_dad_joke",
+    "cooldown": 2
+  },
+  "!message":{
+    "type": "api",
+    "endpoint": "random_message",
     "cooldown": 2
   }
 }

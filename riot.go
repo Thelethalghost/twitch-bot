@@ -269,14 +269,19 @@ func GetActiveMatchBans(puuid string) ([]string, error) {
 func GetStreamStats(puuid string, startTime int64) (StreamStatsCacheEntry, error) {
 	// End time is always now
 	endTime := time.Now().Unix()
-	key := fmt.Sprintf("%s_%d", puuid, startTime)
+	//key := fmt.Sprintf("%s_%d", puuid, startTime)
 
-	streamCacheMu.Lock()
-	if val, ok := streamCache[key]; ok {
-		streamCacheMu.Unlock()
-		return val, nil
-	}
-	streamCacheMu.Unlock()
+	//streamCacheMu.Lock()
+	//if val, ok := streamCache[key]; ok {
+	// // Check if cache is still fresh (less than 2 minutes old)
+	// if time.Now().Unix()-val.CachedAt < 120 {
+	// 	streamCacheMu.Unlock()
+	// 	return val, nil // ✅ Returns cached data only if fresh
+	// }
+	// // Cache expired, delete it
+	// delete(streamCache, key)
+	//	}//
+	//treamCacheMu.Unlock()
 
 	path := fmt.Sprintf("/lol/match/v5/matches/by-puuid/%s/ids?startTime=%d&endTime=%d", puuid, startTime, endTime)
 	data, err := makeRequest("regional", path)
@@ -342,10 +347,10 @@ func GetStreamStats(puuid string, startTime int64) (StreamStatsCacheEntry, error
 		CachedAt: time.Now().Unix(),
 	}
 
-	streamCacheMu.Lock()
-	streamCache[key] = entry
-	streamCacheMu.Unlock()
-
+	//	streamCacheMu.Lock()
+	//	streamCache[key] = entry
+	//	streamCacheMu.Unlock()
+	//
 	return entry, nil
 }
 
@@ -353,3 +358,7 @@ func GetStreamStats(puuid string, startTime int64) (StreamStatsCacheEntry, error
 func urlEscape(s string) string {
 	return strings.ReplaceAll(s, " ", "%20")
 }
+
+//func main() {
+//	GetStreamStats(lFEKoQ-6fKGG7qs6dSsZ3J7XyV3n4oA2yTsTCXZyQ2Jk_u1N6jYGS9aDB47VQDcSxuQtKgIuuMi0XA)
+//}

@@ -11,4 +11,5 @@ players.json
 vendor/
 *.exe
 *.exe~
-
+twitch-bot-475821-9dbf8e70557c.json:Zone.Identifier
+credentials.json
