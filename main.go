@@ -27,6 +27,14 @@ type Joke struct {
 	Joke string `json:"joke"`
 }
 
+var allowedStarters = map[string]bool{
+	"darkpranav": true,
+	"nawi":       true,
+	"stramanor":  true,
+	"pavagon":    true,
+	"marqy":      true,
+}
+
 func getDadJoke() (Joke, error) {
 	req, err := http.NewRequest("GET", "https://icanhazdadjoke.com/", nil)
 	if err != nil {
@@ -155,6 +163,160 @@ func main() {
 				}
 				return r
 			}, command)
+
+			// ADD DEBUG LOGGING RIGHT AFTER THIS:
+			fmt.Printf("🔍 Raw message: [%s]\n", msg)
+			fmt.Printf("🔍 Processed command: [%s]\n", command)
+			fmt.Printf("🔍 HasPrefix !custom: %v\n", strings.HasPrefix(command, "!custom"))
+			// Handle !custom command (with or without arguments)
+			if strings.HasPrefix(command, "!custom") {
+				parts := strings.Fields(command)
+
+				// !custom without arguments - show status
+				if len(parts) == 1 {
+					status := GetSessionStatus()
+					say(conn, channel, fmt.Sprintf("@%s %s", user, status))
+					continue
+				}
+
+				subcommand := strings.ToLower(parts[1])
+
+				switch subcommand {
+				case "start":
+					// !custom start (no rank parameter needed)
+					if !allowedStarters[strings.ToLower(user)] {
+						say(conn, channel, fmt.Sprintf("@%s ❌ Only authorized users can start custom games.", user))
+						continue
+					}
+
+					fmt.Printf("🚀 User %s is starting a session\n", user)
+					StartCustomSession()
+					count, err := AddPlayerToSession("nawi", "bronze")
+					if err != nil {
+						say(conn, channel, fmt.Sprintf("@nawi Failed to join: %s", err.Error()))
+						continue
+					}
+					say(conn, channel, fmt.Sprintf("@nawi ✅ Joined! (%d/10 players)", count))
+					count, err := AddPlayerToSession("darkpranav", "gold")
+					if err != nil {
+						say(conn, channel, fmt.Sprintf("@darkpranav Failed to join: %s", err.Error()))
+						continue
+					}
+					say(conn, channel, fmt.Sprintf("@darkpranav ✅ Joined! (%d/10 players)", count))
+
+					// Auto-generate teams when 10 players join
+					if count == 10 {
+						fmt.Println("🎮 10 players reached! Generating teams...")
+						teams := GenerateTeams()
+
+						fmt.Printf("📤 AUTO-SEND teams to chat: [%s]\n", teams)
+						format_message := fmt.Sprintf("/me %s", teams)
+						say(conn, channel, format_message)
+						time.Sleep(100 * time.Millisecond) // ✅ Small delay
+
+						CloseCustomSession()
+						fmt.Println("✅ Teams sent and session closed")
+					}
+
+					say(conn, channel, fmt.Sprintf("@%s ✅ Custom game started! Type !custom <rank> to join (e.g., !custom gold2, !custom plat, !custom d1). Max 10 players.", user))
+
+				case "test":
+					// !custom test - Fill session with fake players for testing
+					if !allowedStarters[strings.ToLower(user)] {
+						say(conn, channel, fmt.Sprintf("@%s ❌ Only authorized users can use test mode.", user))
+						continue
+					}
+
+					StartCustomSession()
+
+					// Add 10 fake players with random ranks
+					testPlayers := []struct {
+						name string
+						rank string
+					}{
+						{"TestPlayer1", "gold2"},
+						{"TestPlayer2", "plat"},
+						{"TestPlayer3", "diamond"},
+						{"TestPlayer4", "silver"},
+						{"TestPlayer5", "gold"},
+						{"TestPlayer6", "plat2"},
+						{"TestPlayer7", "emerald"},
+						{"TestPlayer8", "bronze"},
+						{"TestPlayer9", "d1"},
+						{"TestPlayer10", "master"},
+					}
+
+					for _, p := range testPlayers {
+						AddPlayerToSession(p.name, p.rank)
+					}
+
+					// Generate teams automatically
+					teams := GenerateTeams()
+					say(conn, channel, fmt.Sprintf("@%s 🧪 TEST MODE: %s", user, teams))
+					CloseCustomSession()
+
+				case "teams":
+					fmt.Println("📋 !custom teams command received")
+
+					// Check if teams were already generated
+					lastTeamsLock.Lock()
+					if lastGeneratedTeams != "" {
+						fmt.Printf("📤 Sending stored teams: [%s]\n", lastGeneratedTeams)
+						say(conn, channel, lastGeneratedTeams)
+						lastTeamsLock.Unlock()
+						continue
+					}
+					lastTeamsLock.Unlock()
+
+					// Generate new teams
+					teams := GenerateTeams()
+					fmt.Printf("📤 Sending generated teams: [%s]\n", teams)
+
+					// ✅ ADD A SMALL DELAY to ensure message is sent
+					say(conn, channel, teams)
+					time.Sleep(100 * time.Millisecond)
+
+					fmt.Println("✅ Message sent to Twitch")
+
+					// Close session after generating teams
+					if !strings.Contains(teams, "No active session") && !strings.Contains(teams, "Not enough players") {
+						CloseCustomSession()
+						fmt.Println("🔒 Session closed after teams generated")
+					}
+
+				case "cancel":
+					// !custom cancel - cancel the session
+					CloseCustomSession()
+					say(conn, channel, fmt.Sprintf("@%s ❌ Custom game session cancelled", user))
+
+				default:
+					// Anything else is treated as rank input
+					rankInput := parts[1]
+
+					count, err := AddPlayerToSession(user, rankInput)
+					if err != nil {
+						say(conn, channel, fmt.Sprintf("@%s Failed to join: %s", user, err.Error()))
+						continue
+					}
+
+					say(conn, channel, fmt.Sprintf("@%s ✅ Joined! (%d/10 players)", user, count))
+
+					// Auto-generate teams when 10 players join
+					if count == 10 {
+						fmt.Println("🎮 10 players reached! Generating teams...")
+						teams := GenerateTeams()
+
+						fmt.Printf("📤 AUTO-SEND teams to chat: [%s]\n", teams)
+						format_message := fmt.Sprintf("/me %s", teams)
+						say(conn, channel, format_message)
+						time.Sleep(100 * time.Millisecond) // ✅ Small delay
+
+						CloseCustomSession()
+						fmt.Println("✅ Teams sent and session closed")
+					}
+				}
+				continue
+			}
 			cfg, ok := commands[command]
 			fmt.Printf("Received: [%q]\n", msg)
 			if !ok {

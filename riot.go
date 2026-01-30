@@ -7,6 +7,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -356,7 +357,7 @@ func GetStreamStats(puuid string, startTime int64) (StreamStatsCacheEntry, error
 
 // ---------- Helpers ----------
 func urlEscape(s string) string {
-	return strings.ReplaceAll(s, " ", "%20")
+	return url.PathEscape(s)
 }
 
 //func main() {
