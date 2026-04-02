@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"math/rand/v2"
 	"net/http"
 	"os"
 	"time"
@@ -123,4 +124,33 @@ func GetTwitchStreamStart(channel string) (int64, error) {
 
 	t, _ := time.Parse(time.RFC3339, res.Data[0].StartedAt)
 	return t.Unix(), nil
+}
+
+func GetRandomDuckJoke() (string, error) {
+	jokes := []string{
+		"What did the duck say when he bought lipstick? Put it on my bill!",
+		"What time do ducks wake up? At the quack of dawn!",
+		"What do you call a clever duck? A wise quacker!",
+		"Why did the duckling almost fall? She tripped on a quack!",
+		"What is a duck’s favorite sea monster? The Quacken!",
+		"Why are ducks bad drivers? Their windshields are always quacked!",
+		"What do you call a duck that breaks into houses? A robber ducky!",
+		"Why was the duck put into the basketball game? To make a fowl shot!",
+		"What do you call a bird that can fix anything? Duck Tape!",
+		"How do you get down off a horse? You don't, you get down off a duck!",
+		"What's a duck's favorite taco topping? Quackamole!",
+		"Why do ducks fly south for the winter? It's too far to waddle!",
+		"What did the duck say to the waiter? Quack!",
+		"What do you call a duck that loves fireworks? A fire-quacker!",
+		"Where do ducks go when they are sick? To the duck-tor!",
+		"What did the detective duck say to his partner? Let's quack this case!",
+		"What do you call a duck with a soul? A quack-vocalist!",
+		"Why did the duck cross the playground? To get to the other slide!",
+		"What do you call a prehistoric duck? A Quack-a-dactyl!",
+		"Why did the duck get an A on his test? He was a real egg-head!",
+		"what is the ducks favourite scientific field? Kvaktum physics",
+	}
+
+	// Returns a random one from the 20 codes above
+	return jokes[rand.IntN(len(jokes))], nil
 }

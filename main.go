@@ -197,7 +197,7 @@ func main() {
 						continue
 					}
 					say(conn, channel, fmt.Sprintf("@nawi ✅ Joined! (%d/10 players)", count))
-					count, err := AddPlayerToSession("darkpranav", "gold")
+					count, err = AddPlayerToSession("darkpranav", "gold")
 					if err != nil {
 						say(conn, channel, fmt.Sprintf("@darkpranav Failed to join: %s", err.Error()))
 						continue
@@ -407,6 +407,13 @@ func main() {
 						log.Printf("Message fetch error: %v", err)
 					} else {
 						say(conn, channel, fmt.Sprintf("@%s %s", user, msg))
+					}
+				case "duck_joke":
+					joke, err := GetRandomDuckJoke()
+					if err != nil {
+						say(conn, channel, fmt.Sprintf("@%s Error fetching a duck joke.", user))
+					} else {
+						say(conn, channel, fmt.Sprintf("@%s @nawi %s", user, joke))
 					}
 				}
 			}

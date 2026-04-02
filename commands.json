@@ -4,7 +4,7 @@
     "response": "Hello there, welcome to the stream!",
     "cooldown": 2
   },
-  "!gang":{
+  "!gang": {
     "type": "static",
     "response": "juh guh huh zuh buh cuh muh nuh tuh wuh yuh uuh",
     "cooldown": 5
@@ -54,10 +54,14 @@
     "endpoint": "random_dad_joke",
     "cooldown": 2
   },
-  "!message":{
+  "!message": {
     "type": "api",
     "endpoint": "random_message",
     "cooldown": 2
+  },
+  "!duckjoke": {
+    "type": "api",
+    "endpoint": "duck_joke",
+    "cooldown": 2
   }
 }
-
